@@ -11,8 +11,8 @@ module Instruction_Memory (
 
     // Initial load for simulation and Tiny Tapeout submission
     initial begin
-        for (integer i = 0; i < 20; i = i + 1)
-            memory[i] = 32'b0;
+        // for (integer i = 0; i < 20; i = i + 1)
+        //     memory[i] = 32'b0;
         $readmemh("instruction.mem", memory); // Loads your program from instruction.mem
     end
 
