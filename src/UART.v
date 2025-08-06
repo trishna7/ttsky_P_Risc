@@ -18,7 +18,7 @@ module UART (
 
     // UART parameters
     parameter CLK_FREQ = 100_000; // 100 MHz
-    parameter BAUD_RATE = 115200;
+    parameter BAUD_RATE = 9600;
     localparam BAUD_COUNT = CLK_FREQ / BAUD_RATE; // Clock cycles per bit
 
     // Memory-mapped addresses

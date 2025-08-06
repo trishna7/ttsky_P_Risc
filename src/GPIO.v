@@ -23,7 +23,6 @@ always @(posedge CLK or posedge reset) begin
         // Write operation
         if (WE && (A == GPIO_ADDR)) begin
             gpio_pin <= WD[0]; // Only use LSB
-            $display("GPIO Write: addr=%h, data=%h, pin=%b @%0t", A, WD, WD[0], $time);
         end
     end
 end
