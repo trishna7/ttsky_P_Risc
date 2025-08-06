@@ -13,7 +13,7 @@ module Instruction_Memory (
     initial begin
         // for (integer i = 0; i < 20; i = i + 1)
         //     memory[i] = 32'b0;
-        $readmemh("instruction.mem", memory); // Loads your program from instruction.mem
+        $readmemh("../src/instruction.mem", memory); // Loads your program from instruction.mem
     end
 
     // Synchronous write for UART programming
