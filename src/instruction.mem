@@ -1,0 +1,14 @@
+00100093  // addi x1, x0, 1       # Set value to 1
+80000337  // lui x6, 0x80000      # Load GPIO address
+00000013  // nop
+00000013  // nop
+00132023  // sw x1, 0(x6)         # Write to GPIO (set pin high)
+00000013  // nop
+00200093  // addi x1, x0, 2       # Change value to 2
+00132023  // sw x1, 0(x6)         # Write new value to GPIO
+00000013  // nop
+00000093  // addi x1, x0, 0       # Set value to 0
+00132023  // sw x1, 0(x6)         # Turn GPIO off
+00100093  // addi x1, x0, 1       # Set back to 1
+00132023  // sw x1, 0(x6)         # GPIO high again
+fe000ae3  // beq x0, x0, -12      # Infinite loop (branch back)
