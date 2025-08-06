@@ -7,7 +7,7 @@ module Data_Memory (
     input [31:0] WD,
     output [31:0] RD
 );
-    reg [31:0] mem [0:255];  // Word-addressable memory
+    reg [31:0] mem [0:128];  // Word-addressable memory
     
     // Check for word alignment (lower 2 bits must be 00)
     wire address_ok = (A[1:0] == 2'b00);

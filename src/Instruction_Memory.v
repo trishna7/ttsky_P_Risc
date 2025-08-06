@@ -7,7 +7,7 @@ module Instruction_Memory (
     output wire [31:0] RD     // Instruction output
 );
     // Memory array (256 words, 32-bit)
-    reg [31:0] memory [0:19];
+    reg [31:0] memory [0:14];
 
     // Initial load for simulation and Tiny Tapeout submission
     initial begin
@@ -32,14 +32,14 @@ module Instruction_Memory (
 
     // Synchronous write for UART programming
     always @(posedge CLK) begin
-        if (WE && A[31:2] < 20) begin
+        if (WE && A[31:2] < 14) begin
             memory[A[31:2]] <= WD;
             //$display("IMEM Write: addr=%h, data=%h @%0t", A, WD, $time);
         end
     end
 
     // Asynchronous read
-    assign RD = (A[31:2] < 20) ? memory[A[31:2]] : 32'h00000013; // NOP if invalid
+    assign RD = (A[31:2] < 14) ? memory[A[31:2]] : 32'h00000013; // NOP if invalid
 
     // // Simulation
     // initial begin
