@@ -20,17 +20,17 @@ module Instruction_Memory (
     always @(posedge CLK) begin
         if (WE && A[31:2] < 20) begin
             memory[A[31:2]] <= WD;
-            $display("IMEM Write: addr=%h, data=%h @%0t", A, WD, $time);
+            //$display("IMEM Write: addr=%h, data=%h @%0t", A, WD, $time);
         end
     end
 
     // Asynchronous read
     assign RD = (A[31:2] < 20) ? memory[A[31:2]] : 32'h00000013; // NOP if invalid
 
-    // Simulation
-    initial begin
-        $display("Loading instruction.mem:");
-        for (integer i = 0; i < 7; i++) 
-            $display("mem[%0d] = %h", i, memory[i]);
-    end
+    // // Simulation
+    // initial begin
+    //     $display("Loading instruction.mem:");
+    //     for (integer i = 0; i < 7; i++) 
+    //        //$display("mem[%0d] = %h", i, memory[i]);
+    // end
 endmodule

@@ -265,13 +265,13 @@ GPIO gpio_module (
 
         UOutE = (UOControlE == 1) ? (ImmExtE) : PCTargetE;
    end
-always @(posedge CLK) begin
-    if (InstrD == 32'h00132023 ) begin
-        $display("Store RegWrite Trace: D=%b E=%b M=%b W=%b, RdD=%d RdE=%d RdM=%d RdW=%d", 
-                 RegWriteD, RegWriteE, RegWriteM, RegWriteW,
-                 InstrD[11:7], RdE, RdM, RdW);
-    end
-end
+// always @(posedge CLK) begin
+//     if (InstrD == 32'h00132023 ) begin
+//         $display("Store RegWrite Trace: D=%b E=%b M=%b W=%b, RdD=%d RdE=%d RdM=%d RdW=%d", 
+//                  RegWriteD, RegWriteE, RegWriteM, RegWriteW,
+//                  InstrD[11:7], RdE, RdM, RdW);
+//     end
+// end
     //ALU
     
     ALU ALU_module(   
@@ -345,12 +345,12 @@ end
         endcase
     end
 
-    always @(posedge CLK) begin
-        if (RegWriteW && RdW == 1) begin
-            $display("x1 Write Debug: ResultSrcW=%b, ALUResultM=%h, ALUResultW=%h, ReadDataW=%h, ResultW=%h", 
-                     ResultSrcW, ALUResultM, ALUResultW, ReadDataW, ResultW);
-        end
-    end
+    // always @(posedge CLK) begin
+    //     if (RegWriteW && RdW == 1) begin
+    //         $display("x1 Write Debug: ResultSrcW=%b, ALUResultM=%h, ALUResultW=%h, ReadDataW=%h, ResultW=%h", 
+    //                  ResultSrcW, ALUResultM, ALUResultW, ReadDataW, ResultW);
+    //     end
+    // end
 
 endmodule
 

@@ -28,10 +28,10 @@ end
     
     always @(negedge CLK) begin
     if (WE3 && A3 != 0) begin
-        if (reg_file[A3] !== WD3) begin  // Only log changes
-            $display("RegWrite: x%0d = %h (prev %h) @%0t", 
-                    A3, WD3, reg_file[A3], $time);
-        end
+        // if (reg_file[A3] !== WD3) begin  // Only log changes
+        //     $display("RegWrite: x%0d = %h (prev %h) @%0t", 
+        //             A3, WD3, reg_file[A3], $time);
+        // end
         reg_file[A3] <= WD3;
     end
 end
