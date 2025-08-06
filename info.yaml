@@ -34,7 +34,7 @@ project:
     - "Registers.v"
     - "UART.v"
     - "Writeback_Reg.v"
-    - "instruction.mem"
+    #- "instruction.mem"
     - "tt_um_trish_P_Risc.v"
     
 
