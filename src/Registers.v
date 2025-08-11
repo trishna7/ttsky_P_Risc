@@ -20,10 +20,10 @@ module Registers (
     assign RD1 = (A1 == 5'b0) ? 32'b0 : reg_file[A1];
     assign RD2 = (A2 == 5'b0) ? 32'b0 : reg_file[A2];
     //simulation
-    initial begin
-    for (integer i = 0; i < 16; i = i + 1)
-        reg_file[i] = 32'b0;  // Initialize all registers to 0
-end
+//     initial begin
+//     for (integer i = 0; i < 16; i = i + 1)
+//         reg_file[i] = 32'b0;  // Initialize all registers to 0
+// end
 
     
     always @(negedge CLK) begin
