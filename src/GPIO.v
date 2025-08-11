@@ -12,6 +12,12 @@ module GPIO (
 
 parameter GPIO_ADDR = 32'h80000000; // Memory-mapped address
 
+// In GPIO.v - add initial block
+initial begin
+    gpio_pin = 1'b0;
+    RD = 32'b0;
+end
+
 always @(posedge CLK or posedge reset) begin
     if (reset) begin
         gpio_pin <= 1'b0;

@@ -34,6 +34,10 @@ always @(*) begin
     ui_in = {4'b0, uart_rx, 3'b0};  // uart_rx on bit 1
   end
 
+  initial begin
+    uart_rx = 1'b1; // UART idle state
+end
+
   assign uart_tx = uo_out[4];
   assign gpio_pin = uo_out[5];
 

@@ -13,6 +13,9 @@ module PC (
 
 assign PCFI = PCSrcE ? PCTargetE : PCPlus4F;
 
+initial begin
+    PCF = 32'b0; // Initialize PC to 0
+end 
 always @(posedge CLK or posedge reset) begin
     if (reset)
         PCF <= 32'b0;            // pc to 0

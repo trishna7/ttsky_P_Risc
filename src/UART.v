@@ -55,6 +55,25 @@ module UART (
     reg set_prog_mode;
     reg clear_rx_ready;
 
+    // In UART.v - add initial block
+    initial begin
+        TX = 1'b1;           // UART idle high
+        RD = 32'b0;
+        imem_WE = 1'b0;
+        imem_A = 32'b0;
+        imem_WD = 32'b0;
+        cpu_stall = 1'b0;
+        prog_mode = 1'b0;
+        
+        // Internal registers
+        rx_data = 32'b0;
+        tx_data = 32'b0;
+        rx_ready = 1'b0;
+        tx_busy = 1'b0;
+        rx_state = RX_IDLE;
+        tx_state = TX_IDLE;
+    end
+
     // Combined RX and control logic - SINGLE ALWAYS BLOCK
     always @(posedge CLK or posedge reset) begin
         if (reset) begin
