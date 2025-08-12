@@ -7,7 +7,7 @@ module Instruction_Memory (
     output wire [31:0] RD     // Instruction output
 );
     // Memory array (256 words, 32-bit)
-    reg [31:0] memory [0:255];
+    reg [31:0] memory [0:128];
 
     initial begin
     // Simple GPIO blink program
