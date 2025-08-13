@@ -225,9 +225,9 @@ async def test_uart_programming_simulation(dut):
     test_program = [
         0x00200093,  # addi x1, x0, 2       # Load value 2 (different from default)
         0x80000337,  # lui x6, 0x80000      # Load GPIO base address
+        0x00000013,  # nop
+        0x00000013,  # nop
         0x00132023,  # sw x1, 0(x6)         # Write to GPIO
-        0x00000013,  # nop
-        0x00000013,  # nop
         0x00000093,  # addi x1, x0, 0       # Load 0
         0x00132023,  # sw x1, 0(x6)         # Write 0 to GPIO
         0xfddff06f,  # jal x0, -16          # Jump back to start

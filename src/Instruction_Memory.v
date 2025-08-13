@@ -19,9 +19,9 @@ module Instruction_Memory (
         // Simple GPIO blink program
         memory[0] = 32'h00100093; // addi x1, x0, 1      # Load 1
         memory[1] = 32'h80000337; // lui x6, 0x80000     # GPIO base
-        memory[2] = 32'h00132023; // sw x1, 0(x6)        # Write to GPIO
-        memory[3] = 32'h00000013; // nop                 # Wait
-        memory[4] = 32'h00000013; // nop                 # Wait  
+        memory[2] = 32'h00000013; // nop                 # Wait
+        memory[3] = 32'h00000013; // nop                 # Wait 
+        memory[4] = 32'h00132023; // sw x1, 0(x6)        # Write to GPIO
         memory[5] = 32'h00000093; // addi x1, x0, 0      # Load 0
         memory[6] = 32'h00132023; // sw x1, 0(x6)        # Write to GPIO
         memory[7] = 32'hfddff06f; // jal x0, -8          # Jump back
