@@ -7,7 +7,7 @@ module Instruction_Memory (
     output wire [31:0] RD     // Instruction output
 );
     // Memory array (256 words, 32-bit)
-    reg [31:0] memory [0:128];
+    reg [31:0] memory [0:127];
 
     initial begin
     // Simple GPIO blink program
@@ -23,7 +23,7 @@ end
 
     // Synchronous write for UART programming
     always @(posedge CLK) begin
-        if (WE && A[31:2] < 14) begin
+        if (WE && A[31:2] < 128) begin
             memory[A[31:2]] <= WD;
             //$display("IMEM Write: addr=%h, data=%h @%0t", A, WD, $time);
         end
