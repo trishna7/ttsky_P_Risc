@@ -24,7 +24,7 @@ module Instruction_Memory (
         memory[4] = 32'h00000013; // nop                 # Wait  
         memory[5] = 32'h00000093; // addi x1, x0, 0      # Load 0
         memory[6] = 32'h00132023; // sw x1, 0(x6)        # Write to GPIO
-        memory[7] = 32'hff9ff06f; // jal x0, -8          # Jump back
+        memory[7] = 32'hfddff06f; // jal x0, -8          # Jump back
         
         // Initialize remaining memory to NOPs
         for (i = 8; i < 64; i = i + 1) begin
