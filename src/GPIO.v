@@ -10,27 +10,27 @@ module GPIO (
     output reg gpio_pin // Single GPIO pin
 );
 
-parameter GPIO_ADDR = 32'h80000000; // Memory-mapped address
+    parameter GPIO_ADDR = 32'h80000000; // Memory-mapped address
 
-// In GPIO.v - add initial block
-initial begin
-    gpio_pin = 1'b0;
-    RD = 32'b0;
-end
+    // Proper initialization
+    initial begin
+        gpio_pin = 1'b0;
+        RD = 32'b0;
+    end
 
-always @(posedge CLK or posedge reset) begin
-    if (reset) begin
-        gpio_pin <= 1'b0;
-        RD <= 32'b0;
-    end else begin
-        // Read operation
-        RD <= (A == GPIO_ADDR) ? {31'b0, gpio_pin} : 32'b0;
-        
-        // Write operation
-        if (WE && (A == GPIO_ADDR)) begin
-            gpio_pin <= WD[0]; // Only use LSB
+    always @(posedge CLK or posedge reset) begin
+        if (reset) begin
+            gpio_pin <= 1'b0;
+            RD <= 32'b0;
+        end else begin
+            // Read operation - always provide current GPIO state
+            RD <= (A == GPIO_ADDR) ? {31'b0, gpio_pin} : 32'b0;
+            
+            // Write operation - only update on valid address and write enable
+            if (WE && (A == GPIO_ADDR)) begin
+                gpio_pin <= WD[0]; // Only use LSB
+            end
         end
     end
-end
 
 endmodule

@@ -16,10 +16,13 @@ module UART (
     output reg prog_mode      // Programming mode active
 );
 
-    // UART parameters
-    parameter CLK_FREQ = 50_000_000; // 100 MHz
-    parameter BAUD_RATE = 9600;
+    // UART parameters - FIXED for Tiny Tapeout
+    parameter CLK_FREQ = 50_000_000; // 50 MHz (Tiny Tapeout standard)
+    parameter BAUD_RATE = 9600;      // Reduced for reliability
     localparam BAUD_COUNT = CLK_FREQ / BAUD_RATE; // Clock cycles per bit
+    
+    // Bounds checking for baud count
+    localparam ACTUAL_BAUD_COUNT = (BAUD_COUNT > 0) ? BAUD_COUNT : 1;
 
     // Memory-mapped addresses
     parameter UART_DATA = 32'h80000004;  // Data register
@@ -50,12 +53,7 @@ module UART (
     // TX states
     localparam TX_IDLE = 4'd0, TX_START = 4'd1, TX_DATA = 4'd2, TX_STOP = 4'd3;
 
-    // Internal signals for control
-    reg start_tx;
-    reg set_prog_mode;
-    reg clear_rx_ready;
-
-    // In UART.v - add initial block
+    // Proper initialization
     initial begin
         TX = 1'b1;           // UART idle high
         RD = 32'b0;
@@ -72,6 +70,15 @@ module UART (
         tx_busy = 1'b0;
         rx_state = RX_IDLE;
         tx_state = TX_IDLE;
+        rx_byte = 8'b0;
+        tx_byte = 8'b0;
+        rx_buffer = 32'b0;
+        byte_count = 3'b0;
+        imem_addr = 32'b0;
+        rx_baud_counter = 32'b0;
+        tx_baud_counter = 32'b0;
+        rx_bit_counter = 4'b0;
+        tx_bit_counter = 4'b0;
     end
 
     // Combined RX and control logic - SINGLE ALWAYS BLOCK
@@ -123,7 +130,7 @@ module UART (
                 RX_IDLE: begin
                     if (RX == 1'b0) begin // Start bit detected
                         rx_state <= RX_START;
-                        rx_baud_counter <= BAUD_COUNT / 2; // Sample at middle of bit
+                        rx_baud_counter <= ACTUAL_BAUD_COUNT / 2; // Sample at middle of bit
                     end
                 end
                 RX_START: begin
@@ -131,7 +138,7 @@ module UART (
                         if (RX == 1'b0) begin
                             rx_state <= RX_DATA;
                             rx_bit_counter <= 8;
-                            rx_baud_counter <= BAUD_COUNT;
+                            rx_baud_counter <= ACTUAL_BAUD_COUNT;
                         end else begin
                             rx_state <= RX_IDLE;
                         end
@@ -143,7 +150,7 @@ module UART (
                     if (rx_baud_counter == 0) begin
                         rx_byte[7:0] <= {RX, rx_byte[7:1]};
                         rx_bit_counter <= rx_bit_counter - 1;
-                        rx_baud_counter <= BAUD_COUNT;
+                        rx_baud_counter <= ACTUAL_BAUD_COUNT;
                         if (rx_bit_counter == 1) begin
                             rx_state <= RX_STOP;
                         end
@@ -167,7 +174,7 @@ module UART (
                                 imem_addr <= imem_addr + 4;
                             end
                         end
-                        rx_baud_counter <= BAUD_COUNT;
+                        rx_baud_counter <= ACTUAL_BAUD_COUNT;
                     end else begin
                         rx_baud_counter <= rx_baud_counter - 1;
                     end
@@ -198,7 +205,7 @@ module UART (
                         tx_state <= TX_START;
                         tx_busy <= 1'b1;
                         tx_byte_count <= 3'b0;
-                        tx_baud_counter <= BAUD_COUNT;
+                        tx_baud_counter <= ACTUAL_BAUD_COUNT;
                     end
                 end
                 TX_START: begin
@@ -206,7 +213,7 @@ module UART (
                     if (tx_baud_counter == 0) begin
                         tx_state <= TX_DATA;
                         tx_bit_counter <= 8;
-                        tx_baud_counter <= BAUD_COUNT;
+                        tx_baud_counter <= ACTUAL_BAUD_COUNT;
                     end else begin
                         tx_baud_counter <= tx_baud_counter - 1;
                     end
@@ -216,7 +223,7 @@ module UART (
                     if (tx_baud_counter == 0) begin
                         tx_byte <= {1'b0, tx_byte[7:1]};
                         tx_bit_counter <= tx_bit_counter - 1;
-                        tx_baud_counter <= BAUD_COUNT;
+                        tx_baud_counter <= ACTUAL_BAUD_COUNT;
                         if (tx_bit_counter == 1) begin
                             tx_state <= TX_STOP;
                         end
@@ -234,7 +241,7 @@ module UART (
                             tx_byte_count <= tx_byte_count + 1;
                             tx_byte <= tx_data[8*(tx_byte_count+1)+:8];
                             tx_state <= TX_START;
-                            tx_baud_counter <= BAUD_COUNT;
+                            tx_baud_counter <= ACTUAL_BAUD_COUNT;
                         end
                     end else begin
                         tx_baud_counter <= tx_baud_counter - 1;

@@ -1,15 +1,14 @@
 `default_nettype none
 
 module Hazard_Unit(
-//source and destination regs execute stage
+    // Source and destination regs execute stage
     input  [4:0] Rs1E,
     input  [4:0] Rs2E,
     input  [4:0] RdE,
     input  [4:0] RdM,
     input  [4:0] RdW,
 
-
-//source and destination regs decode stage
+    // Source and destination regs decode stage
     input  [4:0] Rs1D,
     input  [4:0] Rs2D,
 
@@ -18,65 +17,53 @@ module Hazard_Unit(
     input RegWriteM,
     input RegWriteW,
 
-//Outputs
-output reg StallF,
-output reg StallD,
-output reg FlushD,
-output reg FlushE,
-output reg [1:0] ForwardAE,
-output reg [1:0] ForwardBE
-
+    // Outputs
+    output reg StallF,
+    output reg StallD,
+    output reg FlushD,
+    output reg FlushE,
+    output reg [1:0] ForwardAE,
+    output reg [1:0] ForwardBE
 );
 
-reg lwStall;
-//reg store_hazard;
-initial begin
-// Rs1E= 4'b0000;
-//     Rs2E= 4'b0000;
-//     RdE= 4'b0000;
-//     RdM= 4'b0000;
-//     RdW= 4'b0000;
-//     Rs1D = 4'b0000;
-//     Rs2D= 4'b0000;
-//     PCSrcE= 0;
-//     ResultSrcE= 0;
-//     RegWriteM = 0;
-//     RegWriteW = 0;
-    StallF = 0;
-    StallD = 0;
-    FlushD = 0;
-    FlushE = 0;
-    ForwardAE = 2'b00;
-    ForwardBE = 2'b00;
-end
-
-always @(*) begin
-    // Detect when SW is writing to a register being read by next instruction
-    //store_hazard = (ResultSrcE == 2'b00) && ((Rs1D == RdE) || (Rs2D == RdE));
-
-    lwStall =  ((ResultSrcE == 2'b01) && ((Rs1D == RdE) || (Rs2D == RdE)));
-
-    StallF = lwStall; //|| store_hazard;
-    StallD = lwStall; //|| store_hazard;
-    FlushD = PCSrcE;
-    FlushE = lwStall || PCSrcE; //|| store_hazard 
-
-//ForwardAE
-    if (((Rs1E == RdM) && RegWriteM) && (Rs1E != 0))
-        ForwardAE = 2'b10;
-    else if (((Rs1E == RdW) && RegWriteW) && (Rs1E != 0))
-        ForwardAE = 2'b01;
-    else
+    reg lwStall;
+    
+    // Proper initialization
+    initial begin
+        StallF = 1'b0;
+        StallD = 1'b0;
+        FlushD = 1'b0;
+        FlushE = 1'b0;
         ForwardAE = 2'b00;
-
-//ForwardBE    
-    if (((Rs2E == RdM) && RegWriteM) && (Rs2E != 0))
-        ForwardBE = 2'b10;
-    else if (((Rs2E == RdW) && RegWriteW) && (Rs2E != 0))
-        ForwardBE = 2'b01;
-    else
         ForwardBE = 2'b00;
+        lwStall = 1'b0;
+    end
 
-end
+    always @(*) begin
+        // Load-use hazard detection
+        lwStall = (ResultSrcE == 2'b01) && ((Rs1D == RdE && Rs1D != 5'b0) || (Rs2D == RdE && Rs2D != 5'b0));
+
+        // Stall and flush logic
+        StallF = lwStall;
+        StallD = lwStall;
+        FlushD = PCSrcE;
+        FlushE = lwStall || PCSrcE;
+
+        // ForwardAE logic with proper zero register handling
+        if ((Rs1E == RdM) && RegWriteM && (Rs1E != 5'b0))
+            ForwardAE = 2'b10;  // Forward from Memory stage
+        else if ((Rs1E == RdW) && RegWriteW && (Rs1E != 5'b0))
+            ForwardAE = 2'b01;  // Forward from Writeback stage
+        else
+            ForwardAE = 2'b00;  // No forwarding
+
+        // ForwardBE logic with proper zero register handling    
+        if ((Rs2E == RdM) && RegWriteM && (Rs2E != 5'b0))
+            ForwardBE = 2'b10;  // Forward from Memory stage
+        else if ((Rs2E == RdW) && RegWriteW && (Rs2E != 5'b0))
+            ForwardBE = 2'b01;  // Forward from Writeback stage
+        else
+            ForwardBE = 2'b00;  // No forwarding
+    end
 
 endmodule
