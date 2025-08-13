@@ -8,7 +8,7 @@ module Instruction_Memory (
     output wire [31:0] RD     // Instruction output
 );
     // Increased memory size - 256 words (1KB)
-    reg [31:0] memory [0:255];
+    reg [31:0] memory [0:63];
     
     // Bounds checking
     wire address_valid = (A[31:2] < 256);
