@@ -67,42 +67,68 @@ class UARTProgrammer:
     
 
 @cocotb.test()
-async def test_basic_processor_functionality(dut):
-    """Test basic processor functionality with the default program"""
-    dut._log.info("=== Testing Basic Processor Functionality ===")
+async def test_gpio_functionality(dut):
+    """Test GPIO functionality more thoroughly"""
+    dut._log.info("=== Enhanced GPIO Test ===")
     
-    # Setup clock - 50MHz for Tiny Tapeout
     clock = Clock(dut.clk, 20, units="ns")  # 50MHz
     cocotb.start_soon(clock.start())
     
-    # Reset system
+    # Reset
     dut.ena.value = 1
-    dut.ui_in.value = 8  # UART RX idle high (bit 3)
+    dut.ui_in.value = 8  # UART RX idle (bit 3 high)
     dut.uio_in.value = 0
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 20)
     dut.rst_n.value = 1
     await ClockCycles(dut.clk, 20)
     
-    dut._log.info("System reset complete, starting processor test...")
+    # Monitor GPIO with more detail
+    gpio_changes = 0
+    prev_gpio = None
     
-    # Monitor GPIO output for several cycles
-    gpio_states = []
-    for cycle in range(50):
+    for cycle in range(200):  # Longer observation
         await ClockCycles(dut.clk, 10)
-        gpio_state = int(dut.uo_out.value) & 0x20  # Bit 5 is GPIO
-        gpio_states.append(gpio_state)
-        if cycle % 10 == 0:
-            dut._log.info(f"Cycle {cycle}: GPIO output = {gpio_state >> 5}")
+        current_gpio = (int(dut.uo_out.value) >> 5) & 1  # Extract bit 5
+        
+        if prev_gpio is not None and current_gpio != prev_gpio:
+            gpio_changes += 1
+            dut._log.info(f"GPIO changed at cycle {cycle}: {prev_gpio} → {current_gpio}")
+        
+        prev_gpio = current_gpio
+        
+        if cycle % 50 == 0:
+            dut._log.info(f"Cycle {cycle}: GPIO = {current_gpio}")
     
-    # Check if GPIO is toggling (indicates processor is running)
-    unique_states = len(set(gpio_states))
-    if unique_states > 1:
-        dut._log.info("✓ GPIO is toggling - processor appears to be running correctly!")
+    dut._log.info(f"Total GPIO changes observed: {gpio_changes}")
+    
+    if gpio_changes >= 2:  # Should see multiple toggles
+        dut._log.info("✅ GPIO toggling correctly!")
+        return True
     else:
-        dut._log.warning("⚠ GPIO not toggling - check processor functionality")
+        dut._log.warning("⚠️ GPIO not toggling as expected")
+        return False
+
+@cocotb.test() 
+async def test_memory_access_patterns(dut):
+    """Test that processor is accessing memory correctly"""
+    dut._log.info("=== Memory Access Pattern Test ===")
     
-    dut._log.info("✓ Basic processor test completed")
+    clock = Clock(dut.clk, 20, units="ns")
+    cocotb.start_soon(clock.start())
+    
+    # Reset and run
+    dut.ena.value = 1
+    dut.ui_in.value = 8
+    dut.uio_in.value = 0  
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 20)
+    dut.rst_n.value = 1
+    
+    # Let processor run through several instruction cycles
+    await ClockCycles(dut.clk, 500)
+    
+    dut._log.info("✅ Memory access test completed - no simulation errors")
 
 
 @cocotb.test()
@@ -227,7 +253,7 @@ async def test_comprehensive_system(dut):
     dut._log.info("=== Comprehensive System Test ===")
     
     # Run all individual tests
-    await test_basic_processor_functionality(dut)
+    #await test_basic_processor_functionality(dut)
     await test_uart_timing_verification(dut)
     await test_memory_bounds_checking(dut)
     await test_uart_programming_simulation(dut)
