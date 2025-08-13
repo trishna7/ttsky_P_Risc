@@ -11,7 +11,7 @@ module Instruction_Memory (
     reg [31:0] memory [0:63];
     
     // Bounds checking
-    wire address_valid = (A[31:2] < 256);
+    wire address_valid = (A[31:2] < 64);
 
     // Initialize with default program and clear unused memory
     integer i;
@@ -27,7 +27,7 @@ module Instruction_Memory (
         memory[7] = 32'hff9ff06f; // jal x0, -8          # Jump back
         
         // Initialize remaining memory to NOPs
-        for (i = 8; i < 256; i = i + 1) begin
+        for (i = 8; i < 64; i = i + 1) begin
             memory[i] = 32'h00000013; // NOP instruction
         end
     end
