@@ -230,7 +230,7 @@ async def test_uart_programming_simulation(dut):
         0x00000013,  # nop
         0x00000093,  # addi x1, x0, 0       # Load 0
         0x00132023,  # sw x1, 0(x6)         # Write 0 to GPIO
-        0xff1ff06f,  # jal x0, -16          # Jump back to start
+        0xfddff06f,  # jal x0, -16          # Jump back to start
     ]
     
     # Send test program via UART (this demonstrates the protocol)
