@@ -81,9 +81,9 @@ initial begin
         RD2E         = 32'b0;
         PCE          = 32'b0;
         PCPlus4E     = 32'b0;
-        Rs1E         = 4'b0000;
-        Rs2E         = 4'b0000;
-        RdE          = 4'b0000;
+        Rs1E         = 5'b00000;
+        Rs2E         = 5'b00000;
+        RdE          = 5'b00000;
         ImmExtE      = 32'b0;
 
         JalSrcE      = 1'b0;
@@ -107,9 +107,9 @@ always @(posedge CLK or posedge CLR) begin
         RD2E         <= 32'b0;
         PCE          <= 32'b0;
         PCPlus4E     <= 32'b0;
-        Rs1E         <= 4'b0000;
-        Rs2E         <= 4'b0000;
-        RdE          <= 4'b0000;
+        Rs1E         <= 5'b00000;
+        Rs2E         <= 5'b00000;
+        RdE          <= 5'b00000;
         ImmExtE      <= 32'b0;
 
         JalSrcE      <= 1'b0;

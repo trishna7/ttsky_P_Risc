@@ -51,6 +51,7 @@ module Processor (
     wire imem_WE;
     wire [31:0] imem_A, imem_WD;
     wire cpu_stall;
+    wire prog_mode;
 
 // Instantiate GPIO module
 GPIO gpio_module (
@@ -76,7 +77,8 @@ GPIO gpio_module (
         .imem_WE(imem_WE),
         .imem_A(imem_A),
         .imem_WD(imem_WD),
-        .cpu_stall(cpu_stall)
+        .cpu_stall(cpu_stall),
+        .prog_mode(prog_mode)
     );
 
     // Memory-mapped I/O select
