@@ -70,12 +70,6 @@ class UARTProgrammer:
 async def test_gpio_functionality(dut):
     """Test GPIO functionality more thoroughly"""
     dut._log.info("=== Enhanced GPIO Test ===")
-
-    # Apply reset first
-    dut.rst_n.value = 0
-    await cocotb.triggers.ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    await cocotb.triggers.ClockCycles(dut.clk, 5)
     
     clock = Clock(dut.clk, 20, units="ns")  # 50MHz
     cocotb.start_soon(clock.start())
