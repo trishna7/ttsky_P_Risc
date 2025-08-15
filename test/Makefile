@@ -6,7 +6,11 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
 PROJECT_SOURCES = tt_um_trish_P_Risc.v ALU_Decoder.v ALU.v Control_Unit.v Data_Memory.v Decode_Reg.v Execute_Reg.v GPIO.v Hazard_Unit.v immediate.v Instruction_Memory.v Mem_Reg.v PC.v Processor.v Registers.v UART.v Writeback_Reg.v
+
+# ADD THESE LINES TO FIX THE 'x' STATE ERROR
 export COCOTB_RESOLVE_X=RANDOM
+export COCOTB_LOG_LEVEL=WARNING
+
 ifneq ($(GATES),yes)
 
 # RTL simulation:
