@@ -52,18 +52,18 @@ class UARTProgrammer:
         else:
             self.dut.ui_in.value = current_ui & ~(1 << 3)  # Clear bit 3
     
-    async def program_instruction_word(self, instruction):
-        """Send a 32-bit instruction as 4 bytes (little endian)"""
-        self.dut._log.info(f"Programming instruction: 0x{instruction:08x}")
+    # async def program_instruction_word(self, instruction):
+    #     """Send a 32-bit instruction as 4 bytes (little endian)"""
+    #     self.dut._log.info(f"Programming instruction: 0x{instruction:08x}")
         
-        # Send 4 bytes in little-endian order
-        for i in range(4):
-            byte_val = (instruction >> (i * 8)) & 0xFF
-            self.dut._log.info(f"  Sending byte {i}: 0x{byte_val:02x}")
-            await self.send_uart_byte(byte_val)
+    #     # Send 4 bytes in little-endian order
+    #     for i in range(4):
+    #         byte_val = (instruction >> (i * 8)) & 0xFF
+    #         self.dut._log.info(f"  Sending byte {i}: 0x{byte_val:02x}")
+    #         await self.send_uart_byte(byte_val)
             
-        # Wait for processing
-        await ClockCycles(self.dut.clk, 100)  # Increased wait time
+    #     # Wait for processing
+    #     await ClockCycles(self.dut.clk, 100)  # Increased wait time
     
 
 @cocotb.test()
