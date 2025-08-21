@@ -37,6 +37,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+      
+      - name: Check system resources before GL test
+        run: |
+          echo "=== System Resources Before GL Test ==="
+          free -h
+          df -h
+          echo "CPU info:"
+          nproc
+          echo "Load average:"
+          uptime
 
       - name: GL test
         uses: TinyTapeout/tt-gds-action/gl_test@ttsky25a
